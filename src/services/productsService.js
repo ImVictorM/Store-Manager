@@ -8,6 +8,15 @@ async function getAll() {
   };
 }
 
+async function getById(id) {
+  const product = await productsModel.findById(id);
+  return {
+    type: null,
+    message: product,
+  };
+}
+
 module.exports = {
   getAll,
+  getById,
 };
