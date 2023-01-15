@@ -1,7 +1,7 @@
 const { salesModel } = require('../models');
 const { validateSaleList } = require('./validations/salesValidation');
 
-async function registerSale(saleList) {
+async function registerSales(saleList) {
   const error = validateSaleList(saleList);
   if (error.message) {
     return error;
@@ -14,5 +14,5 @@ async function registerSale(saleList) {
 }
 
 module.exports = {
-  registerSale,
+  registerSales,
 };
