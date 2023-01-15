@@ -2,10 +2,8 @@ const { productsService } = require('../services');
 const { mapError } = require('../utils/errorMap');
 
 async function receiveAll(_req, res) {
-  const { type, message } = await productsService.getAll();
-  if (!type) {
-    return res.status(200).json(message);
-  }
+  const { message } = await productsService.getAll();
+  return res.status(200).json(message);
 }
 
 async function receiveById(req, res) {

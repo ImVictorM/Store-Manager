@@ -11,8 +11,18 @@ const allProductsFromDB = [
     id: 3,
     name: 'product 3'
   }
-]
+];
+
+const productToCreate = {
+  name: 'new product'
+};
+
+const invalidProductToCreate = {
+  name: 'x'
+};
 
 module.exports = {
   allProductsFromDB,
+  productToCreate,
+  invalidProductToCreate,
 }

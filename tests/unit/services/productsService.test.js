@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { productsService } = require('../../../src/services');
 const { productsModel } = require('../../../src/models');
-const { allProductsFromDB } = require('../mocks/productsMock');
+const { allProductsFromDB, productToCreate, invalidProductToCreate } = require('../mocks/productsMock');
 
 describe('Testing products service', function () {
   afterEach(function () {
@@ -44,6 +44,32 @@ describe('Testing products service', function () {
         message: 'Product not found',
       });
     });
-  })
+  });
+
+  describe('Creating a new product', function () {
+    it('Can insert a new product into the db', async function () {
+      const createdProduct = {
+        id: 7,
+        ...productToCreate,
+      }
+      sinon.stub(productsModel, 'createNew').resolves(createdProduct);
+
+      const response = await productsService.insertNew(productToCreate);
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: createdProduct,
+      });
+    });
+
+    it('Returns an error when the product\'s name is invalid', async function () {
+      const response = await productsService.insertNew(invalidProductToCreate);
+
+      expect(response).to.deep.equal({
+        type: 'UNPROCESSABLE_ENTITY',
+        message: '"name" length must be at least 5 characters long',
+      });
+    });
+  });
 
 });

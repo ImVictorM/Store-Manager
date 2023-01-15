@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { productsModel } = require('../../../src/models');
 const { connection } = require('../../../src/database');
-const { allProductsFromDB } = require('../mocks/productsMock');
+const { allProductsFromDB, productToCreate } = require('../mocks/productsMock');
 
 describe('Testing products models', function () {
   afterEach(function () {
@@ -24,5 +24,19 @@ describe('Testing products models', function () {
     const response = await productsModel.findById(1);
 
     expect(response).to.be.deep.equal(firstProduct);
+  });
+
+  it('Can create a new product an return it containing id', async function () {
+    const createdProduct = {
+      id: 7,
+      ...productToCreate
+    }
+    sinon.stub(connection, 'execute')
+      .onFirstCall().resolves([{ insertId: 7 }])
+      .onSecondCall().resolves([[createdProduct]]);
+
+    const response = await productsModel.createNew(productToCreate);
+
+    expect(response).to.deep.equal(createdProduct);
   });
 });
