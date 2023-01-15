@@ -19,9 +19,11 @@ async function receiveById(req, res) {
 }
 
 async function requestCreation(req, res) {
-  // only one way yet
   const { body: newProduct } = req;
-  const { message } = await productsService.insertNew(newProduct);
+  const { message, type } = await productsService.insertNew(newProduct);
+  if (type) {
+    return res.status(mapError(type)).json({ message });
+  }
   return res.status(201).json(message);
 }
 

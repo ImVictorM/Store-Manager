@@ -1,5 +1,6 @@
 const map = {
   NOT_FOUND: 404,
+  UNPROCESSABLE_ENTITY: 422,
 };
 
 const INTERNAL_SERVER_ERROR = 500;
