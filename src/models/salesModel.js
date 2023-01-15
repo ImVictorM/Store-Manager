@@ -1,19 +1,19 @@
 const { connection } = require('../database');
 
 async function createNewSale() {
-  const query = 'INSERT INTO StoreManagar.sales (date) VALUES (DEFAULT)';
+  const query = 'INSERT INTO StoreManager.sales (date) VALUES (DEFAULT)';
   const [{ insertId: saleId }] = await connection.execute(query);
   return saleId;
 }
 
-async function createSoldProducts(productList) {
+async function createSoldProducts(saleList) {
   const saleId = await createNewSale();
-  const salesProductsRelation = productList.map(async (product) => {
-    const { productId, quantity } = product;
+  const salesProductsRelation = saleList.map(async (saleReport) => {
+    const { productId, quantity } = saleReport;
 
     const query = `
     INSERT INTO
-    StoreManage.sales_products (product_id, sale_id, quantity)
+    StoreManager.sales_products (product_id, sale_id, quantity)
     VALUES (?, ?, ?)
     `;
 
@@ -24,11 +24,10 @@ async function createSoldProducts(productList) {
 
   return {
     id: saleId,
-    itemsSold: productList,
+    itemsSold: saleList,
   };
 }
 
 module.exports = {
-  createNewSale,
   createSoldProducts,
 };
