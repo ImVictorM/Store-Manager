@@ -18,7 +18,14 @@ async function receiveById(req, res) {
   return res.status(mapError(type)).json({ message });
 }
 
+async function requestCreation(req, res) {
+  const { body: newProduct } = req;
+  const { message } = await productsService.insertNew(newProduct);
+  return res.status(201).json(message);
+}
+
 module.exports = {
   receiveAll,
   receiveById,
+  requestCreation,
 };

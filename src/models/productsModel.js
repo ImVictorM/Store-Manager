@@ -16,8 +16,8 @@ async function createNew(product) {
   const colums = Object.keys(product);
   const values = Object.values(product);
   const placeholders = Array(colums.length).fill('?').join(', ');
-  const query = `INSERT INTO StoreManager.products (${placeholders}) VALUES (${placeholders})`;
-  const [{ insertId }] = await connection.execute(query, [...colums, ...values]);
+  const query = `INSERT INTO StoreManager.products (${colums.join(', ')}) VALUES (${placeholders})`;
+  const [{ insertId }] = await connection.execute(query, [...values]);
   const createdProduct = await findById(insertId);
   return createdProduct;
 }
