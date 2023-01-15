@@ -12,7 +12,7 @@ async function findById(id) {
   return product[0];
 }
 
-async function insertNew(product) {
+async function createNew(product) {
   const colums = Object.keys(product);
   const values = Object.values(product);
   const placeholders = Array(colums.length).fill('?').join(', ');
@@ -25,5 +25,5 @@ async function insertNew(product) {
 module.exports = {
   findAll,
   findById,
-  insertNew,
+  createNew,
 };

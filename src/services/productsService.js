@@ -24,7 +24,16 @@ async function getById(id) {
   };
 }
 
+async function insertNew(product) {
+  const createdProduct = await productsModel.createNew(product);
+  return {
+    type: null,
+    message: createdProduct,
+  };
+}
+
 module.exports = {
   getAll,
   getById,
+  insertNew,
 };
