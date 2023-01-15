@@ -19,6 +19,7 @@ async function receiveById(req, res) {
 }
 
 async function requestCreation(req, res) {
+  // only one way yet
   const { body: newProduct } = req;
   const { message } = await productsService.insertNew(newProduct);
   return res.status(201).json(message);
