@@ -35,6 +35,7 @@ const validCreationResponse = {
   id: 1,
   message: validSaleList
 }
+
 module.exports = {
   validSaleList,
   saleListWithInvalidProductId,
