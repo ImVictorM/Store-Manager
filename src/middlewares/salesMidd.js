@@ -4,7 +4,7 @@ function validateKeys(req, res, next) {
   const { body: saleList } = req;
   let errorMessage = null;
   const keysAreValid = saleList.every((sale) => {
-    const { error } = saleRequiredKeys.validate(sale);
+    const { error = false } = saleRequiredKeys.validate(sale);
     errorMessage = error.message;
     return !error;
   });

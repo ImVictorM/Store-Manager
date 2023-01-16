@@ -1,11 +1,16 @@
-const { salesSchema } = require('../../schemas');
+const { salesSchema: { salePattern } } = require('../../schemas');
 
 function validateSaleList(saleList) {
-  const { error } = salesSchema.saleListSchema.validate(saleList);
-  if (error) {
+  let errorMessage = null;
+  const salesAreValid = saleList.every((sale) => {
+    const { error = false } = salePattern.validate(sale);
+    errorMessage = error.message;
+    return !error;
+  });
+  if (!salesAreValid) {
     return {
       type: 'UNPROCESSABLE_ENTITY',
-      message: error.message,
+      message: errorMessage,
     };
   }
 
