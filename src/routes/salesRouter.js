@@ -4,6 +4,11 @@ const { salesMidd } = require('../middlewares');
 
 const router = express.Router();
 
-router.post('/', salesMidd.validateKeys, salesController.requestCreation);
+router.post(
+  '/',
+  salesMidd.validateKeys,
+  salesMidd.validateProductsExist,
+  salesController.requestCreation,
+);
 
 module.exports = router;
