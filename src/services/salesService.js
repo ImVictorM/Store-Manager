@@ -1,5 +1,5 @@
 const { salesModel } = require('../models');
-const { validateSaleList } = require('./validations/salesValidation');
+const { validateSaleList, saleWasFound } = require('./validations/salesValidation');
 
 async function registerSales(saleList) {
   const error = validateSaleList(saleList);
@@ -21,7 +21,20 @@ async function getAll() {
   };
 }
 
+async function getById(id) {
+  const saleList = await salesModel.findById(id);
+  const error = saleWasFound(saleList);
+  if (error.message) {
+    return error;
+  }
+  return {
+    type: null,
+    message: saleList,
+  };
+}
+
 module.exports = {
   registerSales,
   getAll,
+  getById,
 };

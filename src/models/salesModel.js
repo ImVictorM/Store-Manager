@@ -42,7 +42,22 @@ async function findAll() {
   return formattedSaleList;
 }
 
+async function findById(id) {
+  const query = `
+  SELECT  sales.date, sales_products.product_id, sales_products.quantity
+  FROM StoreManager.sales AS sales
+  INNER JOIN StoreManager.sales_products AS sales_products
+  ON sales.id = sales_products.sale_id
+  WHERE sales.id = ?
+  ORDER BY sales_products.sale_id ASC, sales_products.product_id
+  `;
+  const [saleList] = await connection.execute(query, [id]);
+  const formattedSaleList = saleList.map((sale) => camelize(sale));
+  return formattedSaleList;
+}
+
 module.exports = {
   createSoldProducts,
   findAll,
+  findById,
 };
