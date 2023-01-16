@@ -13,6 +13,15 @@ async function registerSales(saleList) {
   };
 }
 
+async function getAll() {
+  const saleList = await salesModel.findAll();
+  return {
+    type: null,
+    message: saleList,
+  };
+}
+
 module.exports = {
   registerSales,
+  getAll,
 };

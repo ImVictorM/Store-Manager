@@ -11,6 +11,12 @@ async function requestCreation(req, res) {
   return res.status(201).json(message);
 }
 
+async function receiveAll(_req, res) {
+  const { message } = await salesService.getAll();
+  return res.status(200).json(message);
+}
+
 module.exports = {
   requestCreation,
+  receiveAll,
 };

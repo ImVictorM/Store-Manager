@@ -1,3 +1,4 @@
+const camelize = require('camelize');
 const { connection } = require('../database');
 
 async function createNewSale() {
@@ -28,6 +29,20 @@ async function createSoldProducts(saleList) {
   };
 }
 
+async function findAll() {
+  const query = `
+  SELECT  sales.date, sales_products.*
+  FROM StoreManager.sales AS sales
+  INNER JOIN StoreManager.sales_products AS sales_products
+  ON sales.id = sales_products.sale_id
+  ORDER BY sales_products.sale_id ASC, sales_products.product_id
+  `;
+  const [saleList] = await connection.execute(query);
+  const formattedSaleList = saleList.map((sale) => camelize(sale));
+  return formattedSaleList;
+}
+
 module.exports = {
   createSoldProducts,
+  findAll,
 };

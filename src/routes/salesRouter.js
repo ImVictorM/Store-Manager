@@ -4,6 +4,7 @@ const { salesMidd } = require('../middlewares');
 
 const router = express.Router();
 
+router.get('/', salesController.receiveAll);
 router.post(
   '/',
   salesMidd.validateKeys,
