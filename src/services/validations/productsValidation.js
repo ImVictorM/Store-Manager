@@ -1,6 +1,8 @@
 const { productsSchema } = require('../../schemas');
+const { productsModel } = require('../../models');
 
-function productWasFound(product) {
+async function productWasFound(id) {
+  const product = await productsModel.findById(id);
   if (product) {
     return true;
   }

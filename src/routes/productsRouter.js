@@ -22,5 +22,9 @@ router.post(
   productsMidd.validateReqKeys,
   productsController.requestCreation,
 );
+router.delete(
+  '/:id',
+  productsController.requestDelete,
+);
 
 module.exports = router;

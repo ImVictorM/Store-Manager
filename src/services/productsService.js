@@ -11,13 +11,15 @@ async function getAll() {
 
 async function getById(id) {
   const product = await productsModel.findById(id);
-  const error = productWasFound(product);
-  if (error.message) {
-    return error;
+  if (product) {
+    return {
+      type: null,
+      message: product,
+    };
   }
   return {
-    type: null,
-    message: product,
+    type: 'NOT_FOUND',
+    message: 'Product not found',
   };
 }
 
@@ -38,8 +40,7 @@ async function updateInteraction(id, newProduct) {
   if (validationError.message) {
     return validationError;
   }
-  const productQuery = await productsModel.findById(id);
-  const existenceError = productWasFound(productQuery);
+  const existenceError = await productWasFound(id);
   if (existenceError.message) {
     return existenceError;
   }
@@ -50,9 +51,22 @@ async function updateInteraction(id, newProduct) {
   };
 }
 
+async function deleteInteraction(id) {
+  const existenceError = await productWasFound(id);
+  if (existenceError.message) {
+    return existenceError;
+  }
+  await productsModel.deleteById(id);
+  return {
+    type: null,
+    message: 'Deleted successfully',
+  };
+}
+
 module.exports = {
   getAll,
   getById,
   insertNew,
   updateInteraction,
+  deleteInteraction,
 };
