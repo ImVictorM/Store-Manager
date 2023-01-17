@@ -1,8 +1,13 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { salesModel } = require('../../../src/models');
-const { validSaleList } = require('../mocks/salesMock');
+const {
+  validSaleList,
+  allSalesFromDB,
+  saleListByIdFromDB,
+} = require('../mocks/salesMock');
 const { connection } = require('../../../src/database');
+const camelize = require('camelize');
 
 describe('Testing sales model', function () {
   afterEach(function () {
@@ -23,5 +28,29 @@ describe('Testing sales model', function () {
         itemsSold: validSaleList
       });
     });
-  })
+  });
+
+  describe('GET /sales', function () {
+    it('Can get all sales succesfully', async function () {
+      sinon.stub(connection, 'execute').resolves([allSalesFromDB]);
+
+      const response = await salesModel.findAll();
+
+      const expectedSalesPattern = allSalesFromDB.map((sale) => camelize(sale));
+
+      expect(response).to.deep.equal(expectedSalesPattern);
+    });
+  });
+
+  describe('GET /sales:id', function () {
+    it('Can get a sale list by id', async function () {
+      sinon.stub(connection, 'execute').resolves([saleListByIdFromDB])
+
+      const response = await salesModel.findById(1);
+
+      const expectedSalesPattern = saleListByIdFromDB.map((sale) => camelize(sale));
+
+      expect(response).to.deep.equal(expectedSalesPattern);
+    });
+  });
 });
