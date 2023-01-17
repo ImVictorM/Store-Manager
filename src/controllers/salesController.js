@@ -25,8 +25,18 @@ async function receiveById(req, res) {
   return res.status(200).json(message);
 }
 
+async function requestDelete(req, res) {
+  const { params: { id } } = req;
+  const { message, type } = await salesService.deleteInteraction(id);
+  if (type) {
+    return res.status(mapError(type)).json({ message });
+  }
+  return res.status(204).end();
+}
+
 module.exports = {
   requestCreation,
   receiveAll,
   receiveById,
+  requestDelete,
 };

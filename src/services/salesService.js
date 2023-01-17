@@ -33,8 +33,22 @@ async function getById(id) {
   };
 }
 
+async function deleteInteraction(id) {
+  const saleList = await salesModel.findById(id);
+  const error = saleWasFound(saleList);
+  if (error.message) {
+    return error;
+  }
+  await salesModel.deleteById(id);
+  return {
+    type: null,
+    message: 'Deleted successfully',
+  };
+}
+
 module.exports = {
   registerSales,
   getAll,
   getById,
+  deleteInteraction,
 };

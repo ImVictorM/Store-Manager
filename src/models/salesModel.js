@@ -56,8 +56,19 @@ async function findById(id) {
   return formattedSaleList;
 }
 
+async function deleteById(id) {
+  const query = `
+  DELETE StoreManager.sales, StoreManager.sales_products
+  FROM StoreManager.sales
+  INNER JOIN StoreManager.sales_products
+  ON StoreManager.sales.id = StoreManager.sales_products.sale_id
+  WHERE id = ?`;
+  await connection.execute(query, [id]);
+}
+
 module.exports = {
   createSoldProducts,
   findAll,
   findById,
+  deleteById,
 };
