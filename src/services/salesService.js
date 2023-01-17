@@ -46,9 +46,27 @@ async function deleteInteraction(id) {
   };
 }
 
+async function updateInteraction(id, updatedSaleList) {
+  const saleList = await salesModel.findById(id);
+  const notFoundError = saleWasFound(saleList);
+  if (notFoundError.message) {
+    return notFoundError;
+  }
+  const badReqError = validateSaleList(updatedSaleList);
+  if (badReqError.message) {
+    return badReqError;
+  }
+  const updateResponse = await salesModel.updateById(id, updatedSaleList);
+  return {
+    type: null,
+    message: updateResponse,
+  };
+}
+
 module.exports = {
   registerSales,
   getAll,
   getById,
   deleteInteraction,
+  updateInteraction,
 };

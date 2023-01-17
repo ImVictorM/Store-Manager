@@ -66,9 +66,32 @@ async function deleteById(id) {
   await connection.execute(query, [id]);
 }
 
+async function updateById(saleId, updatedSaleList) {
+  const insertPromises = updatedSaleList.map(async (sale) => {
+    const { productId, quantity } = sale;
+
+    const query = `
+    UPDATE StoreManager.sales_products
+    INNER JOIN StoreManager.sales
+    ON StoreManager.sales.id = StoreManager.sales_products.sale_id
+    SET product_id = ?, quantity = ?
+    WHERE sale_id = ?`;
+
+    await connection.execute(query, [productId, quantity, saleId]);
+  });
+
+  await Promise.all(insertPromises);
+
+  return {
+    saleId,
+    itemsUpdated: updatedSaleList,
+  };
+}
+
 module.exports = {
   createSoldProducts,
   findAll,
   findById,
   deleteById,
+  updateById,
 };

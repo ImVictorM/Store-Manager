@@ -34,9 +34,23 @@ async function requestDelete(req, res) {
   return res.status(204).end();
 }
 
+async function requestUpdate(req, res) {
+  const {
+    body: updatedSaleList,
+    params: { id },
+  } = req;
+  const { message, type } = await salesService.updateInteraction(id, updatedSaleList);
+
+  if (type) {
+    return res.status(mapError(type)).json({ message });
+  }
+  return res.status(200).json(message);
+}
+
 module.exports = {
   requestCreation,
   receiveAll,
   receiveById,
   requestDelete,
+  requestUpdate,
 };
