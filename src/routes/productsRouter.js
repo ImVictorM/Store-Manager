@@ -5,7 +5,11 @@ const { productsMidd } = require('../middlewares');
 const router = express.Router();
 
 router.get('/', productsController.receiveAll);
-router.get('/:id', productsController.receiveById);
+router.get(
+  '/:id',
+  productsMidd.productExists,
+  productsController.receiveById,
+);
 router.put(
   '/:id',
   productsMidd.productExists,

@@ -1,5 +1,5 @@
 const { productsModel } = require('../models');
-const { productWasFound, productIsValid } = require('./validations/productsValidation');
+const { productIsValid } = require('./validations/productsValidation');
 
 async function getAll() {
   const allProducts = await productsModel.findAll();
@@ -11,13 +11,6 @@ async function getAll() {
 
 async function getById(id) {
   const product = await productsModel.findById(id);
-  const { message } = productWasFound(product);
-  if (message) {
-    return {
-      type: 'NOT_FOUND',
-      message,
-    };
-  }
   return {
     type: null,
     message: product,
