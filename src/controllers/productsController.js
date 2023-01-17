@@ -25,8 +25,19 @@ async function requestCreation(req, res) {
   return res.status(201).json(message);
 }
 
+async function requestUpdate(req, res) {
+  const {
+    body: newProduct,
+    params: { id },
+  } = req;
+
+  const { message } = await productsService.updateInteraction(id, newProduct);
+  return res.status(200).json(message);
+}
+
 module.exports = {
   receiveAll,
   receiveById,
   requestCreation,
+  requestUpdate,
 };

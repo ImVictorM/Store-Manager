@@ -36,8 +36,17 @@ async function insertNew(product) {
   };
 }
 
+async function updateInteraction(id, newProduct) {
+  const updatedProduct = await productsModel.updateById(id, newProduct);
+  return {
+    type: null,
+    message: updatedProduct,
+  };
+}
+
 module.exports = {
   getAll,
   getById,
   insertNew,
+  updateInteraction,
 };

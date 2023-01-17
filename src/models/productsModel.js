@@ -22,8 +22,22 @@ async function createNew(product) {
   return createdProduct;
 }
 
+async function updateById(id, newProduct) {
+  const { name } = newProduct;
+  const query = `
+  UPDATE StoreManager.products
+  SET name = ?
+  WHERE id = ?
+  `;
+
+  await connection.execute(query, [name, id]);
+  const updatedProduct = await findById(id);
+  return updatedProduct;
+}
+
 module.exports = {
   findAll,
   findById,
   createNew,
+  updateById,
 };
