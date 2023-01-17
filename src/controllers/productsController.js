@@ -31,7 +31,10 @@ async function requestUpdate(req, res) {
     params: { id },
   } = req;
 
-  const { message } = await productsService.updateInteraction(id, newProduct);
+  const { message, type } = await productsService.updateInteraction(id, newProduct);
+  if (type) {
+    return res.status(422).json({ message });
+  }
   return res.status(200).json(message);
 }
 

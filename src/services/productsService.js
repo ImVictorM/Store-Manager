@@ -37,6 +37,10 @@ async function insertNew(product) {
 }
 
 async function updateInteraction(id, newProduct) {
+  const error = productIsValid(newProduct);
+    if (error.message) {
+    return error;
+  }
   const updatedProduct = await productsModel.updateById(id, newProduct);
   return {
     type: null,

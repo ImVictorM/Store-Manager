@@ -6,9 +6,15 @@ const router = express.Router();
 
 router.get('/', productsController.receiveAll);
 router.get('/:id', productsController.receiveById);
+router.put(
+  '/:id',
+  productsMidd.productExists,
+  productsMidd.validateReqKeys,
+  productsController.requestUpdate,
+);
 router.post(
   '/',
-  productsMidd.validateKeys,
+  productsMidd.validateReqKeys,
   productsController.requestCreation,
 );
 
