@@ -1,5 +1,5 @@
 const { productsModel } = require('../models');
-const { productIsValid } = require('./validations/productsValidation');
+const { productWasFound, productIsValid } = require('./validations/productsValidation');
 
 async function getAll() {
   const allProducts = await productsModel.findAll();
@@ -11,6 +11,10 @@ async function getAll() {
 
 async function getById(id) {
   const product = await productsModel.findById(id);
+  const error = productWasFound(product);
+  if (error.message) {
+    return error;
+  }
   return {
     type: null,
     message: product,
@@ -30,9 +34,14 @@ async function insertNew(product) {
 }
 
 async function updateInteraction(id, newProduct) {
-  const error = productIsValid(newProduct);
-    if (error.message) {
-    return error;
+  const productQuery = await productsModel.findById(id);
+  const existenceError = productWasFound(productQuery);
+  if (existenceError.message) {
+    return existenceError;
+  }
+  const validationError = productIsValid(newProduct);
+    if (validationError.message) {
+    return validationError;
   }
   const updatedProduct = await productsModel.updateById(id, newProduct);
   return {
