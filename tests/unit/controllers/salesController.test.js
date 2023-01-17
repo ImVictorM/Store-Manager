@@ -2,12 +2,14 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const {
   validSaleList,
-  saleListWithInvalidProductId,
   saleListWithInvalidQuantity,
-  validCreationResponse
+  validCreationResponse,
+  allSalesFromDB,
+  saleListByIdFromDB
 } = require('../mocks/salesMock');
 const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
+const camelize = require('camelize');
 
 describe('Testing sales controller', function () {
   afterEach(function () {
@@ -52,5 +54,65 @@ describe('Testing sales controller', function () {
       expect(res.status).to.have.been.calledWith(201);
       expect(res.json).to.have.been.calledWith(validCreationResponse);
     });
-  })
+  });
+
+  describe('GET /sales', function () {
+    it('Can get all sales', async function () {
+      const res = {};
+      const req = { params: { id: 1 } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      const salesPattern = allSalesFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesService, 'getAll').resolves({
+        type: null,
+        message: salesPattern
+      });
+
+      await salesController.receiveAll(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(salesPattern);
+    });
+  });
+
+  describe('GET /sales/:id', function () {
+    it('Returns an error whe none sale is found', async function () {
+      const req = { params: { id: 777 }};
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'getById').resolves({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+
+      await salesController.receiveById(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+
+    it('Get a sale list by id', async function () {
+      const req = { params: { id: 1 }};
+      const res = {};
+      const salesPattern = saleListByIdFromDB.map((sale) => camelize(sale));
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'getById').resolves({
+        type: null,
+        message: salesPattern,
+      });
+
+      await salesController.receiveById(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(salesPattern);
+    });
+  });
 });
