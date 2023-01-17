@@ -37,8 +37,6 @@ describe('Testing products controller', function () {
     });
   });
 
-
-
   describe('GET /products/:id', function () {
     it('Can responde a request containing a valid id', async function () {
       const validId = 1;
@@ -169,6 +167,48 @@ describe('Testing products controller', function () {
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.json).to.have.been.calledWith(updatedProduct);
+    });
+  });
+
+  describe('DELETE /products/:id', function () {
+    it('Retuns an error when id isn\'t valid', async function () {
+      const req = {
+        params: { id: 777 },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsService, 'deleteInteraction').resolves({
+        type: 'NOT_FOUND',
+        message: 'Product not found',
+      });
+
+      await productsController.requestDelete(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+    });
+
+    it('Deletes a product successfully', async function () {
+      const req = {
+        params: { id: 1 },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+
+      sinon.stub(productsService, 'deleteInteraction').resolves({
+        type: null,
+        message: 'Deleted successfully',
+      });
+
+      await productsController.requestDelete(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+      expect(res.end).to.have.been.calledAfter(res.status);
     });
   });
 });

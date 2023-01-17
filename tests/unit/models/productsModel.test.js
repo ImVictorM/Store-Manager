@@ -64,4 +64,16 @@ describe('Testing products models', function () {
       expect(response).to.be.deep.equal(updatedProduct);
     });
   });
+
+  describe('DELETE /products/:id', function () {
+    it('Can delete a product successfully', async function () {
+      sinon.stub(connection, 'execute')
+        .onFirstCall().resolves()
+        .onSecondCall().resolves([[undefined]]);
+
+      await productsModel.deleteById(3);
+      const response = await productsModel.findById(3);
+      expect(response).to.be.equal(undefined);
+    });
+  });
 });

@@ -115,4 +115,28 @@ describe('Testing products service', function () {
     });
   });
 
+  describe('DELETE /products/:id', function () {
+    it('Returns an error when the id isn\'t valid', async function () {
+      sinon.stub(productsModel, 'findById').resolves(undefined);
+
+      const response = await productsService.deleteInteraction(777);
+
+      expect(response).to.be.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Product not found',
+      });
+    });
+
+    it('Can delete a product successfully', async function () {
+      const idOneProduct = allProductsFromDB[0];
+      sinon.stub(productsModel, 'findById').resolves(idOneProduct);
+
+      const response = await productsService.deleteInteraction(1);
+
+      expect(response).to.be.deep.equal({
+        type: null,
+        message: 'Deleted successfully',
+      });
+    });
+  });
 });
