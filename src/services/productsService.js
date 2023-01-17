@@ -34,14 +34,14 @@ async function insertNew(product) {
 }
 
 async function updateInteraction(id, newProduct) {
+  const validationError = productIsValid(newProduct);
+  if (validationError.message) {
+    return validationError;
+  }
   const productQuery = await productsModel.findById(id);
   const existenceError = productWasFound(productQuery);
   if (existenceError.message) {
     return existenceError;
-  }
-  const validationError = productIsValid(newProduct);
-    if (validationError.message) {
-    return validationError;
   }
   const updatedProduct = await productsModel.updateById(id, newProduct);
   return {

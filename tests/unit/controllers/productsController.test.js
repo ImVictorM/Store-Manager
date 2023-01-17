@@ -6,7 +6,12 @@ chai.use(sinonChai);
 
 const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
-const { allProductsFromDB, productToCreate } = require('../mocks/productsMock');
+const {
+  allProductsFromDB,
+  productToCreate,
+  productToUpdate,
+  updatedProduct
+} = require('../mocks/productsMock');
 
 
 describe('Testing products controller', function () {
@@ -14,23 +19,27 @@ describe('Testing products controller', function () {
     sinon.restore();
   });
 
-  it('Can responde with all products', async function () {
-    const res = {};
-    const req = {};
-    res.status = sinon.stub().returns(res);
-    res.json = sinon.stub().returns();
-    sinon.stub(productsService, 'getAll').resolves({
-      type: null,
-      message: allProductsFromDB,
+  describe('GET /products', function () {
+    it('Can responde with all products', async function () {
+      const res = {};
+      const req = {};
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, 'getAll').resolves({
+        type: null,
+        message: allProductsFromDB,
+      });
+
+      await productsController.receiveAll(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(allProductsFromDB);
     });
-
-    await productsController.receiveAll(req, res);
-
-    expect(res.status).to.have.been.calledWith(200);
-    expect(res.json).to.have.been.calledWith(allProductsFromDB);
   });
 
-  describe('Receiving a GET request containing id', function () {
+
+
+  describe('GET /products/:id', function () {
     it('Can responde a request containing a valid id', async function () {
       const validId = 1;
       const idOneProduct = allProductsFromDB[0];
@@ -75,7 +84,7 @@ describe('Testing products controller', function () {
     });
   });
 
-  describe('Receiving a POST request', function () {
+  describe('POST /products', function () {
     it('Can create a new product', async function () {
       const req = { body: productToCreate };
       const res = {};
@@ -116,6 +125,50 @@ describe('Testing products controller', function () {
       expect(res.json).to.have.been.calledWith({
         message: '"name" is required'
       });
+    });
+  });
+
+  describe('PUT /products/:id', function () {
+    it('Returns an error when product is not found', async function () {
+      const req = {
+        body: productToUpdate,
+        params: { id: 777 },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsService, 'updateInteraction').resolves({
+        type: 'NOT_FOUND',
+        message: 'Product not found',
+      });
+
+      await productsController.requestUpdate(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+    });
+
+    it('Can update a product successfully', async function () {
+      const req = {
+        body: productToUpdate,
+        params: { id: 1 },
+      };
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsService, 'updateInteraction').resolves({
+        type: null,
+        message: updatedProduct,
+      });
+
+      await productsController.requestUpdate(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(updatedProduct);
     });
   });
 });

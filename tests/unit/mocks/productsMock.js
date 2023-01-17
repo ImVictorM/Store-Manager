@@ -21,8 +21,19 @@ const invalidProductToCreate = {
   name: 'x'
 };
 
+const updatedProduct = {
+  id: 1,
+  name: 'updated product'
+};
+
+const productToUpdate = {
+  name: 'updated product'
+};
+
 module.exports = {
   allProductsFromDB,
   productToCreate,
   invalidProductToCreate,
+  productToUpdate,
+  updatedProduct,
 }
