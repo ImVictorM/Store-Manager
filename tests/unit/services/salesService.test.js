@@ -5,9 +5,12 @@ const {
   validSaleList,
   saleListWithInvalidProductId,
   saleListWithInvalidQuantity,
-  validCreationResponse
+  validCreationResponse,
+  allSalesFromDB,
+  saleListByIdFromDB
 } = require('../mocks/salesMock');
 const { salesService } = require('../../../src/services');
+const camelize = require('camelize');
 
 describe('Testing sales service', function () {
   afterEach(function () {
@@ -43,5 +46,44 @@ describe('Testing sales service', function () {
         message: validCreationResponse,
       });
     });
-  })
+  });
+
+  describe('GET /sales', function () {
+    it('Can get all sales', async function () {
+      const salesPattern = allSalesFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesModel, 'findAll').resolves(salesPattern);
+
+      const response = await salesService.getAll();
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: salesPattern
+      });
+    });
+  });
+
+  describe('GET /sales/:id', function () {
+    it('Returns an error when none sale is found', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+
+      const response = await salesService.getById(777);
+
+      expect(response).to.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+    });
+
+    it('Can get a sale list by id', async function () {
+      const salesPattern = saleListByIdFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesModel, 'findById').resolves(salesPattern);
+
+      const response = await salesService.getById(1);
+
+      expect(response).to.deep.equal({
+        type: null,
+        message: salesPattern,
+      });
+    });
+  });
 });
