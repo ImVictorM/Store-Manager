@@ -86,4 +86,29 @@ describe('Testing sales service', function () {
       });
     });
   });
+
+  describe('DELETE /sales/:id', function () {
+    it('Retuns an error when id is invalid', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+
+      const response = await salesService.deleteInteraction(777);
+
+      expect(response).to.be.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+    });
+
+    it('Delete a sale successfully', async function () {
+      const responseFromModel = saleListByIdFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesModel, 'findById').resolves(responseFromModel);
+
+      const response = await salesService.deleteInteraction(1);
+
+      expect(response).to.be.deep.equal({
+        type: null,
+        message: 'Deleted successfully',
+      });
+    });
+  });
 });

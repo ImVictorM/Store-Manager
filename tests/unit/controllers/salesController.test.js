@@ -78,7 +78,7 @@ describe('Testing sales controller', function () {
   });
 
   describe('GET /sales/:id', function () {
-    it('Returns an error whe none sale is found', async function () {
+    it('Returns an error when none sale is found', async function () {
       const req = { params: { id: 777 }};
       const res = {};
 
@@ -113,6 +113,44 @@ describe('Testing sales controller', function () {
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.json).to.have.been.calledWith(salesPattern);
+    });
+  });
+
+  describe('DELETE /sales/:id', function () {
+    it('Retuns an error when id is invalid', async function () {
+      const req = { params: { id: 777 }};
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'deleteInteraction').resolves({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+
+      await salesController.requestDelete(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+
+    it('Delete a sale successfully', async function () {
+      const req = { params: { id: 1 }};
+      const res = {};
+
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+
+      sinon.stub(salesService, 'deleteInteraction').resolves({
+        type: null,
+        message: 'Deleted successfully',
+      });
+
+      await salesController.requestDelete(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+      expect(res.end).to.have.been.calledAfter(res.status);
     });
   });
 });

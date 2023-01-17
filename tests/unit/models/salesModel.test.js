@@ -42,7 +42,7 @@ describe('Testing sales model', function () {
     });
   });
 
-  describe('GET /sales:id', function () {
+  describe('GET /sales/:id', function () {
     it('Can get a sale list by id', async function () {
       sinon.stub(connection, 'execute').resolves([saleListByIdFromDB])
 
@@ -51,6 +51,18 @@ describe('Testing sales model', function () {
       const expectedSalesPattern = saleListByIdFromDB.map((sale) => camelize(sale));
 
       expect(response).to.deep.equal(expectedSalesPattern);
+    });
+  });
+
+  describe('DELETE /sales/:id', function () {
+    it('Can delete a sale successfully', async function () {
+      sinon.stub(connection, 'execute')
+        .onFirstCall().resolves()
+        .onSecondCall().resolves([[]]);
+
+      await salesModel.deleteById(3);
+      const response = await salesModel.findById(3);
+      expect(response).to.be.deep.equal([]);
     });
   });
 });
