@@ -23,6 +23,14 @@ async function getById(id) {
   };
 }
 
+async function getBySearchQuery(productName) {
+  const products = await productsModel.findBySearchQuery(productName);
+  return {
+    type: null,
+    message: products,
+  };
+}
+
 async function insertNew(product) {
   const error = productIsValid(product);
   if (error.message) {
@@ -66,6 +74,7 @@ async function deleteInteraction(id) {
 module.exports = {
   getAll,
   getById,
+  getBySearchQuery,
   insertNew,
   updateInteraction,
   deleteInteraction,

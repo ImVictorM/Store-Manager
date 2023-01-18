@@ -16,6 +16,15 @@ async function receiveById(req, res) {
   return res.status(mapError(type)).json({ message });
 }
 
+async function receiveBySearchQuery(req, res) {
+  const {
+    query: { q: productName },
+  } = req;
+
+  const { message } = await productsService.getBySearchQuery(productName);
+  return res.status(200).json(message);
+}
+
 async function requestCreation(req, res) {
   const { body: newProduct } = req;
   const { message, type } = await productsService.insertNew(newProduct);
@@ -50,6 +59,7 @@ async function requestDelete(req, res) {
 module.exports = {
   receiveAll,
   receiveById,
+  receiveBySearchQuery,
   requestCreation,
   requestUpdate,
   requestDelete,

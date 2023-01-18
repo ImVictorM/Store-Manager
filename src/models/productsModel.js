@@ -12,6 +12,12 @@ async function findById(id) {
   return product[0];
 }
 
+async function findBySearchQuery(productName = '') {
+  const query = 'SELECT * from StoreManager.products WHERE name LIKE ?';
+  const [products] = await connection.execute(query, [productName.concat('%')]);
+  return products;
+}
+
 async function createNew(product) {
   const colums = Object.keys(product);
   const values = Object.values(product);
@@ -43,6 +49,7 @@ async function deleteById(id) {
 module.exports = {
   findAll,
   findById,
+  findBySearchQuery,
   createNew,
   updateById,
   deleteById,
