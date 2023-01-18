@@ -8,6 +8,7 @@ const {
   validCreationResponse,
   allSalesFromDB,
   saleListByIdFromDB,
+  invalidSaleList,
 } = require('../mocks/salesMock');
 const { allProductsFromDB } = require('../mocks/productsMock');
 const { salesService } = require('../../../src/services');
@@ -19,6 +20,19 @@ describe('Testing sales service', function () {
   });
 
   describe('POST /sales', function () {
+    it('Returns an error when some product is not found on db', async function () {
+      sinon.stub(productsModel, 'findById')
+        .onFirstCall().resolves(allProductsFromDB[0])
+        .onSecondCall().resolves(undefined);
+
+      const response = await salesService.registerSales(invalidSaleList);
+
+      expect(response).to.be.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Product not found',
+      });
+    });
+
     it('Returns an error when some productId is invalid', async function () {
       const response = await salesService.registerSales(saleListWithInvalidProductId);
 
@@ -117,6 +131,18 @@ describe('Testing sales service', function () {
   });
 
   describe('PUT /sales/:id', function () {
+    it('Returns an error when some product is not found on db', async function () {
+      sinon.stub(salesModel, 'findById').resolves(saleListByIdFromDB);
+      sinon.stub(productsModel, 'findById').resolves(undefined);
+
+      const response = await salesService.updateInteraction(1, invalidSaleList);
+
+      expect(response).to.be.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Product not found',
+      });
+    });
+
     it('Returns an error when id is invalid', async function () {
       sinon.stub(salesModel, 'findById').resolves([]);
 

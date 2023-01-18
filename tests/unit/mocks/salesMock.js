@@ -9,6 +9,17 @@ const validSaleList = [
   }
 ];
 
+const invalidSaleList = [
+  {
+    productId: 1,
+    quantity: 1
+  },
+  {
+    productId: 777,
+    quantity: 5
+  }
+];
+
 const saleListWithInvalidProductId = [
   {
     productId: 'j',
@@ -72,6 +83,7 @@ const saleListByIdFromDB = [
 
 module.exports = {
   validSaleList,
+  invalidSaleList,
   saleListWithInvalidProductId,
   saleListWithInvalidQuantity,
   validCreationResponse,
