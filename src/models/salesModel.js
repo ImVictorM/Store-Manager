@@ -72,12 +72,10 @@ async function updateById(saleId, updatedSaleList) {
 
     const query = `
     UPDATE StoreManager.sales_products
-    INNER JOIN StoreManager.sales
-    ON StoreManager.sales.id = StoreManager.sales_products.sale_id
     SET product_id = ?, quantity = ?
-    WHERE sale_id = ?`;
+    WHERE sale_id = ? AND product_id = ?`;
 
-    await connection.execute(query, [productId, quantity, saleId]);
+    await connection.execute(query, [productId, quantity, saleId, productId]);
   });
 
   await Promise.all(insertPromises);
