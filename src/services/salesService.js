@@ -23,9 +23,11 @@ async function getAll() {
 
 async function getById(id) {
   const saleList = await salesModel.findById(id);
-  const error = saleWasFound(saleList);
-  if (error.message) {
-    return error;
+  if (saleList.length === 0) {
+    return {
+      type: 'NOT_FOUND',
+      message: 'Sale not found',
+    };
   }
   return {
     type: null,
@@ -34,8 +36,7 @@ async function getById(id) {
 }
 
 async function deleteInteraction(id) {
-  const saleList = await salesModel.findById(id);
-  const error = saleWasFound(saleList);
+  const error = await saleWasFound(id);
   if (error.message) {
     return error;
   }
@@ -47,8 +48,7 @@ async function deleteInteraction(id) {
 }
 
 async function updateInteraction(id, updatedSaleList) {
-  const saleList = await salesModel.findById(id);
-  const notFoundError = saleWasFound(saleList);
+  const notFoundError = await saleWasFound(id);
   if (notFoundError.message) {
     return notFoundError;
   }

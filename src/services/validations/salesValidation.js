@@ -1,6 +1,8 @@
 const { salesSchema: { salePattern } } = require('../../schemas');
+const { productsModel, salesModel } = require('../../models');
 
-function saleWasFound(saleList) {
+async function saleWasFound(id) {
+  const saleList = await salesModel.findById(id);
   if (saleList.length === 0) {
     return {
       type: 'NOT_FOUND',
@@ -27,7 +29,25 @@ function validateSaleList(saleList) {
   return true;
 }
 
+// async function validateProductsExist(saleList) {
+//   const productsExist = await Promise.all(saleList.map(async (sale) => {
+//     const { productId } = sale;
+//     const productQuery = await productsModel.findById(productId);
+//     const productExists = typeof productQuery === 'object';
+//     return productExists;
+//   }));
+//   const invalidRequest = productsExist.some((productExists) => productExists === false);
+//   if (invalidRequest) {
+//     return {
+//       type: 'NOT_FOUND',
+//       message: 'Product not found',
+//     };
+//   }
+//   return true;
+// }
+
 module.exports = {
+  // validateProductsExist,
   validateSaleList,
   saleWasFound,
 };
