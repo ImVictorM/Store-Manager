@@ -1,7 +1,7 @@
 const { salesSchema: { salePattern } } = require('../../schemas');
 const { productsModel, salesModel } = require('../../models');
 
-async function saleWasFound(id) {
+async function validateSaleExists(id) {
   const saleList = await salesModel.findById(id);
   if (saleList.length === 0) {
     return {
@@ -9,10 +9,10 @@ async function saleWasFound(id) {
       message: 'Sale not found',
     };
   }
-  return true;
+  return false;
 }
 
-function validateSaleList(saleList) {
+function validateSalesPattern(saleList) {
   let errorMessage = null;
   const salesAreValid = saleList.every((sale) => {
     const { error = false } = salePattern.validate(sale);
@@ -26,28 +26,28 @@ function validateSaleList(saleList) {
     };
   }
 
-  return true;
+  return false;
 }
 
-// async function validateProductsExist(saleList) {
-//   const productsExist = await Promise.all(saleList.map(async (sale) => {
-//     const { productId } = sale;
-//     const productQuery = await productsModel.findById(productId);
-//     const productExists = typeof productQuery === 'object';
-//     return productExists;
-//   }));
-//   const invalidRequest = productsExist.some((productExists) => productExists === false);
-//   if (invalidRequest) {
-//     return {
-//       type: 'NOT_FOUND',
-//       message: 'Product not found',
-//     };
-//   }
-//   return true;
-// }
+async function validateReqSoldProducts(saleList) {
+  const productsExist = await Promise.all(saleList.map(async (sale) => {
+    const { productId } = sale;
+    const productQuery = await productsModel.findById(productId);
+    const productExists = typeof productQuery === 'object';
+    return productExists;
+  }));
+  const invalidRequest = productsExist.some((productExists) => productExists === false);
+  if (invalidRequest) {
+    return {
+      type: 'NOT_FOUND',
+      message: 'Product not found',
+    };
+  }
+  return false;
+}
 
 module.exports = {
-  // validateProductsExist,
-  validateSaleList,
-  saleWasFound,
+  validateReqSoldProducts,
+  validateSalesPattern,
+  validateSaleExists,
 };

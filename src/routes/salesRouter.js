@@ -15,13 +15,11 @@ router.get(
 router.post(
   '/',
   salesMidd.validateKeys,
-  salesMidd.validateProductsExist,
   salesController.requestCreation,
 );
 router.put(
   '/:id',
   salesMidd.validateKeys,
-  salesMidd.validateProductsExist,
   salesController.requestUpdate,
 );
 router.delete(

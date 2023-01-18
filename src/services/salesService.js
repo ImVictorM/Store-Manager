@@ -1,10 +1,18 @@
 const { salesModel } = require('../models');
-const { validateSaleList, saleWasFound } = require('./validations/salesValidation');
+const {
+  validateSalesPattern,
+  validateSaleExists,
+  validateReqSoldProducts,
+} = require('./validations/salesValidation');
 
 async function registerSales(saleList) {
-  const error = validateSaleList(saleList);
-  if (error.message) {
-    return error;
+  const salesPatternError = validateSalesPattern(saleList);
+  if (salesPatternError) {
+    return salesPatternError;
+  }
+  const soldProductsError = await validateReqSoldProducts(saleList);
+  if (soldProductsError) {
+    return soldProductsError;
   }
   const registerResponse = await salesModel.createSoldProducts(saleList);
   return {
@@ -36,9 +44,9 @@ async function getById(id) {
 }
 
 async function deleteInteraction(id) {
-  const error = await saleWasFound(id);
-  if (error.message) {
-    return error;
+  const saleExistenceError = await validateSaleExists(id);
+  if (saleExistenceError) {
+    return saleExistenceError;
   }
   await salesModel.deleteById(id);
   return {
@@ -48,13 +56,17 @@ async function deleteInteraction(id) {
 }
 
 async function updateInteraction(id, updatedSaleList) {
-  const notFoundError = await saleWasFound(id);
-  if (notFoundError.message) {
-    return notFoundError;
+  const saleExistenceError = await validateSaleExists(id);
+  if (saleExistenceError) {
+    return saleExistenceError;
   }
-  const badReqError = validateSaleList(updatedSaleList);
-  if (badReqError.message) {
-    return badReqError;
+  const salesPatternError = validateSalesPattern(updatedSaleList);
+  if (salesPatternError) {
+    return salesPatternError;
+  }
+  const soldProductsError = await validateReqSoldProducts(updatedSaleList);
+  if (soldProductsError) {
+    return soldProductsError;
   }
   const updateResponse = await salesModel.updateById(id, updatedSaleList);
   return {

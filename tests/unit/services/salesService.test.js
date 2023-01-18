@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const { salesModel } = require('../../../src/models');
+const { salesModel, productsModel } = require('../../../src/models');
 const {
   validSaleList,
   saleListWithInvalidProductId,
@@ -9,6 +9,7 @@ const {
   allSalesFromDB,
   saleListByIdFromDB,
 } = require('../mocks/salesMock');
+const { allProductsFromDB } = require('../mocks/productsMock');
 const { salesService } = require('../../../src/services');
 const camelize = require('camelize');
 
@@ -37,7 +38,10 @@ describe('Testing sales service', function () {
     });
 
     it('Can create new sales succesfully', async function () {
-      sinon.stub(salesModel, 'createSoldProducts').resolves(validCreationResponse)
+      sinon.stub(productsModel, 'findById')
+        .onFirstCall().resolves(allProductsFromDB[0])
+        .onSecondCall().resolves(allProductsFromDB[1]);
+      sinon.stub(salesModel, 'createSoldProducts').resolves(validCreationResponse);
 
       const response = await salesService.registerSales(validSaleList);
 
@@ -138,6 +142,10 @@ describe('Testing sales service', function () {
 
     it('Updates a sale list successfully', async function () {
       const modelReturn = saleListByIdFromDB.map((sale) => camelize(sale));
+
+      sinon.stub(productsModel, 'findById')
+        .onFirstCall().resolves(allProductsFromDB[0])
+        .onSecondCall().resolves(allProductsFromDB[1]);
       sinon.stub(salesModel, 'findById').resolves(modelReturn);
 
       const response = await salesService.updateInteraction(1, validSaleList);
