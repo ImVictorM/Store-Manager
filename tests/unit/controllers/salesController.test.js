@@ -153,4 +153,56 @@ describe('Testing sales controller', function () {
       expect(res.end).to.have.been.calledAfter(res.status);
     });
   });
+
+  describe('PUT /sales/:id', function () {
+    it('Returns an error when sale id is invalid', async function () {
+      const req = {
+        params: { id: 777 },
+        body: validSaleList
+      }
+
+      const res = {}
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'updateInteraction').resolves({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+
+      await salesController.requestUpdate(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+
+    it('Updates a sale list successfully', async function () {
+      const req = {
+        params: { id: 1 },
+        body: validSaleList
+      }
+
+      const res = {}
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(salesService, 'updateInteraction').resolves({
+        type: null,
+        message: {
+          saleId: 1,
+          itemsUpdated: validSaleList,
+        },
+      });
+
+      await salesController.requestUpdate(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({
+        saleId: 1,
+        itemsUpdated: validSaleList,
+      });
+    });
+  });
 });

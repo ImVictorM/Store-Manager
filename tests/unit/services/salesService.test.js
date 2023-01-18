@@ -7,7 +7,8 @@ const {
   saleListWithInvalidQuantity,
   validCreationResponse,
   allSalesFromDB,
-  saleListByIdFromDB
+  saleListByIdFromDB,
+  updatedSaleList
 } = require('../mocks/salesMock');
 const { salesService } = require('../../../src/services');
 const camelize = require('camelize');
@@ -108,6 +109,46 @@ describe('Testing sales service', function () {
       expect(response).to.be.deep.equal({
         type: null,
         message: 'Deleted successfully',
+      });
+    });
+  });
+
+  describe('PUT /sales/:id', function () {
+    it('Returns an error when id is invalid', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+
+      const response = await salesService.updateInteraction(777, validSaleList);
+
+      expect(response).to.be.deep.equal({
+        type: 'NOT_FOUND',
+        message: 'Sale not found',
+      });
+    });
+
+    it('Returns an error when the request is invalid', async function () {
+      const modelReturn = saleListByIdFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesModel, 'findById').resolves(modelReturn);
+
+      const response = await salesService.updateInteraction(1, saleListWithInvalidProductId);
+
+      expect(response).to.be.deep.equal({
+        type: 'UNPROCESSABLE_ENTITY',
+        message: '"productId" must be a number'
+      });
+    });
+
+    it('Updates a sale list successfully', async function () {
+      const modelReturn = saleListByIdFromDB.map((sale) => camelize(sale));
+      sinon.stub(salesModel, 'findById').resolves(modelReturn);
+
+      const response = await salesService.updateInteraction(1, validSaleList);
+
+      expect(response).to.be.deep.equal({
+        type: null,
+        message: {
+          saleId: 1,
+          itemsUpdated: validSaleList,
+        }
       });
     });
   });

@@ -76,5 +76,5 @@ module.exports = {
   saleListWithInvalidQuantity,
   validCreationResponse,
   allSalesFromDB,
-  saleListByIdFromDB
+  saleListByIdFromDB,
 }

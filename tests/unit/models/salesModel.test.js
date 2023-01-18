@@ -65,4 +65,17 @@ describe('Testing sales model', function () {
       expect(response).to.be.deep.equal([]);
     });
   });
+
+  describe('PUT /sales/:id', function () {
+    it('Can update a sale list successfully', async function () {
+      sinon.stub(connection, 'execute').resolves();
+
+      const response = await salesModel.updateById(1, validSaleList);
+
+      expect(response).to.be.deep.equal({
+        saleId: 1,
+        itemsUpdated: validSaleList,
+      });
+    });
+  });
 });
