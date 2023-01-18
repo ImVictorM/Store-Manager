@@ -1,18 +1,18 @@
 const { productsSchema } = require('../../schemas');
 const { productsModel } = require('../../models');
 
-async function productWasFound(id) {
+async function validateProductExists(id) {
   const product = await productsModel.findById(id);
-  if (product) {
-    return true;
+  if (!product) {
+    return {
+      type: 'NOT_FOUND',
+      message: 'Product not found',
+    };
   }
-  return {
-    type: 'NOT_FOUND',
-    message: 'Product not found',
-  };
+  return false;
 }
 
-function productIsValid(product) {
+function validateProductPattern(product) {
   const { error } = productsSchema.productStandard.validate(product);
   if (error) {
     return {
@@ -21,10 +21,10 @@ function productIsValid(product) {
     };
   }
 
-  return true;
+  return false;
 }
 
 module.exports = {
-  productWasFound,
-  productIsValid,
+  validateProductExists,
+  validateProductPattern,
 };

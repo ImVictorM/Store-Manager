@@ -1,5 +1,8 @@
 const { productsModel } = require('../models');
-const { productWasFound, productIsValid } = require('./validations/productsValidation');
+const {
+  validateProductExists,
+  validateProductPattern,
+} = require('./validations/productsValidation');
 
 async function getAll() {
   const allProducts = await productsModel.findAll();
@@ -32,9 +35,9 @@ async function getBySearchQuery(productName) {
 }
 
 async function insertNew(product) {
-  const error = productIsValid(product);
-  if (error.message) {
-    return error;
+  const productPatternError = validateProductPattern(product);
+  if (productPatternError) {
+    return productPatternError;
   }
   const createdProduct = await productsModel.createNew(product);
   return {
@@ -44,13 +47,13 @@ async function insertNew(product) {
 }
 
 async function updateInteraction(id, newProduct) {
-  const validationError = productIsValid(newProduct);
-  if (validationError.message) {
-    return validationError;
+  const productPatternError = validateProductPattern(newProduct);
+  if (productPatternError) {
+    return productPatternError;
   }
-  const existenceError = await productWasFound(id);
-  if (existenceError.message) {
-    return existenceError;
+  const productExistenceError = await validateProductExists(id);
+  if (productExistenceError) {
+    return productExistenceError;
   }
   const updatedProduct = await productsModel.updateById(id, newProduct);
   return {
@@ -60,9 +63,9 @@ async function updateInteraction(id, newProduct) {
 }
 
 async function deleteInteraction(id) {
-  const existenceError = await productWasFound(id);
-  if (existenceError.message) {
-    return existenceError;
+  const productExistenceError = await validateProductExists(id);
+  if (productExistenceError) {
+    return productExistenceError;
   }
   await productsModel.deleteById(id);
   return {
