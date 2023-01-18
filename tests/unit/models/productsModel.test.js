@@ -5,8 +5,8 @@ const { connection } = require('../../../src/database');
 const {
   allProductsFromDB,
   productToCreate,
-  productToUpdate,
-  updatedProduct
+  updatedProduct,
+  hammerSearch,
 } = require('../mocks/productsMock');
 
 describe('Testing products models', function () {
@@ -24,6 +24,25 @@ describe('Testing products models', function () {
     });
   });
 
+  describe('GET /sales/search?q=...', function () {
+    it('Can find products based on user search', async function () {
+      sinon.stub(connection, 'execute').resolves([hammerSearch]);
+
+      const response = await productsModel.findBySearchQuery('Martelo');
+
+      expect(response).to.have.lengthOf(1);
+      expect(response[0]).to.be.deep.equal(hammerSearch[0]);
+    });
+
+    it('Returns all products when user search is null', async function () {
+      sinon.stub(connection, 'execute').resolves([allProductsFromDB]);
+
+      const response = await productsModel.findBySearchQuery();
+
+      expect(response).to.be.deep.equal(allProductsFromDB);
+    });
+  });
+
   describe('GET /products/:id', function () {
     it('Can find a product by id', async function () {
       const firstProduct = allProductsFromDB[0];
@@ -34,7 +53,6 @@ describe('Testing products models', function () {
       expect(response).to.be.deep.equal(firstProduct);
     });
   });
-
 
   describe('POST /products', function () {
     it('Can create a new product an return it containing id', async function () {

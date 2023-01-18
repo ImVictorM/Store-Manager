@@ -10,7 +10,8 @@ const {
   allProductsFromDB,
   productToCreate,
   productToUpdate,
-  updatedProduct
+  updatedProduct,
+  hammerSearch
 } = require('../mocks/productsMock');
 
 
@@ -34,6 +35,28 @@ describe('Testing products controller', function () {
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.json).to.have.been.calledWith(allProductsFromDB);
+    });
+  });
+
+  describe('GET /sales/search?q=...', function () {
+    it('Can receive products base on user search', async function () {
+      const res = {};
+      const req = {
+        query: { q: 'Martelo' },
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon.stub(productsService, 'getBySearchQuery').resolves({
+        type: null,
+        message: hammerSearch
+      });
+
+      await productsController.receiveBySearchQuery(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(hammerSearch);
     });
   });
 

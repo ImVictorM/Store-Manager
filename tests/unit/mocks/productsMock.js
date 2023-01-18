@@ -30,10 +30,18 @@ const productToUpdate = {
   name: 'updated product'
 };
 
+const hammerSearch = [
+  {
+    id: 1,
+    name: "Martelo de Thor"
+  }
+];
+
 module.exports = {
   allProductsFromDB,
   productToCreate,
   invalidProductToCreate,
   productToUpdate,
   updatedProduct,
+  hammerSearch,
 }

@@ -7,7 +7,8 @@ const {
   productToCreate,
   invalidProductToCreate,
   productToUpdate,
-  updatedProduct
+  updatedProduct,
+  hammerSearch
 } = require('../mocks/productsMock');
 
 describe('Testing products service', function () {
@@ -24,6 +25,19 @@ describe('Testing products service', function () {
       expect(response).to.deep.equal({
         type: null,
         message: allProductsFromDB,
+      });
+    });
+  });
+
+  describe('GET /sales/search?q=...', function () {
+    it('Can get products based on user search', async function () {
+      sinon.stub(productsModel, 'findBySearchQuery').resolves(hammerSearch);
+
+      const response = await productsService.getBySearchQuery('Martelo');
+
+      expect(response).to.be.deep.equal({
+        type: null,
+        message: hammerSearch,
       });
     });
   });

@@ -8,7 +8,6 @@ const {
   validCreationResponse,
   allSalesFromDB,
   saleListByIdFromDB,
-  updatedSaleList
 } = require('../mocks/salesMock');
 const { salesService } = require('../../../src/services');
 const camelize = require('camelize');
