@@ -9,6 +9,8 @@ In this project, I was able to:
 - Learn and implement the MSC architecture;
 - Divide my code into layers following the MSC architecture;
 - Create unit tests for the model, service, and controller layers;
+- Test using Mocha, Chai, and Sinon;
+- Validate requests using Joi;
 - Create a RESTful API;
 - Connect the API to a MySQL database and use it;
 
@@ -20,8 +22,10 @@ In this project, I was able to:
             <th>Express</th>
             <th>Node.JS</th>
             <th>MySQL</th>
+            <th>Mocha JS</th>
             <th>Chai JS</th>
             <th>Sinon JS</th>
+            <th>Joi</th>
             <th>Docker</th>
         </tr>
     </thead>
@@ -67,6 +71,16 @@ In this project, I was able to:
                     /> 
                 </a>
             </td>
+            <td align="center">
+                <a href="https://mochajs.org/" target="_blank" rel"noreferrer">
+                    <img
+                        src="https://avatars.githubusercontent.com/u/8770005?s=200&v=4"
+                        alt="mocha-js"
+                        width="40"
+                        height="40"
+                    />
+                </a>
+            </td>
              <td align="center">
                 <a href="https://www.chaijs.com/" target="_blank" rel="noreferrer"> 
                     <img src="https://raw.githubusercontent.com/gist/keithamus/3d8cfbaeddf8bdf5f7cd94a3bdae0934/raw/63ca295f3aa7e1b94b598d84dfe0330383497a8c/Chai%20Logo%20(C).svg" 
@@ -84,6 +98,16 @@ In this project, I was able to:
                         width="40" 
                         height="40"
                     /> 
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://joi.dev/" target="_blank" rel="noreferrer">
+                    <img
+                        src="https://avatars.githubusercontent.com/u/3774533?s=200&v=4"
+                        alt="joi"
+                        width="40"
+                        height="40"
+                    />
                 </a>
             </td>
             <td align="center">
