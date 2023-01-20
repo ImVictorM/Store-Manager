@@ -130,28 +130,30 @@ In this project, I was able to:
 ```
 git clone git@github.com:ImVictorM/Store-Manager.git && cd Store-Manager
 ```
-2. Get the containers running
-```
-docker-compose up -d
-```
-3. Enter the server container
-```
-docker exec -it store_manager bash
-```
-4. Install the dependencies
+2. Install the dependencies
 ```
 npm install
 ```
-5. create and populate the database
+3. Get the containers running
 ```
-npm run migration && npm run seed
+docker-compose up -d
 ```
-6. Start the server
+4. Enter the server's container
+```
+docker exec -it store_manager bash
+```
+5. Start the server
 ```
 npm run start
 ---- or ----
 npm run debug
 ```
+
+Once the server is running, you must create and populate the database. To do this, open another terminal, enter the server's container (step 4) and type the following command:
+```
+npm run migration && npm run seed
+```
+
 
 ## Testing 🛠️
 <strong>Note:</strong> for the tests to work correctly, the server must be running.
