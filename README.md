@@ -154,7 +154,9 @@ npm run debug
 ```
 
 ## Testing 🛠️
+<strong>Note:</strong> for the tests to work correctly, the server must be running.
+
 Running all tests:
 ```
-npm run test:mocha
+npm test
 ```
